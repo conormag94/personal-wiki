@@ -1,0 +1,14 @@
+<html>
+    <head>
+      {% if title %}
+      <title>{{ title }} - Personal Wiki</title>
+      {% else %}
+      <title>Welcome to Personal Wiki</title>
+      {% endif %}
+    </head>
+    <body>
+        <div>Wiki: <a href="/">Home</a></div>
+        <hr>
+        {% block content %}{% endblock %}
+    </body>
+</html>
