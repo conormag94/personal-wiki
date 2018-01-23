@@ -1,7 +1,7 @@
-from flask import current_app
-
 import hashlib
 import hmac
+
+from flask import current_app
 
 def verify_signature(received_signature, payload_body):
     """
