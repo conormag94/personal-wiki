@@ -25,16 +25,16 @@ def webhook_event():
     """
     if request_is_authorized(request):
         request_params = request.get_json()
-        updated, deleted = get_changed_files(payload_json=request_params)
+        updated, removed = get_changed_files(payload_json=request_params)
 
-        print(updated, deleted)
         response_message = {
             'status': 'Success',
             'changes': {
                 'updated': updated,
-                'deleted': deleted
+                'removed': removed
             }
         }
+        print(response_message)
         return jsonify(response_message), 200
     else:
         return jsonify('Invalid security token'), 401
