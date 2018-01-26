@@ -8,4 +8,4 @@ load_dotenv(os.path.join(basedir, '.env'))
 class Config(object):
     SECRET_KEY = os.environ.get('SECRET_KEY')
     DEBUG = True
-    VERIFY_WEBHOOKS = True
+    VERIFY_WEBHOOKS = False

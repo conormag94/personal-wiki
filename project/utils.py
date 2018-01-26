@@ -3,6 +3,24 @@ import hmac
 
 from flask import current_app
 
+def get_changed_files(payload_json):
+    updated = []
+    deleted = []
+    
+    for commit in payload_json['commits']:
+        for file in commit['added']:
+            updated.append(file)
+        for file in commit['modified']:
+            updated.append(file)
+        
+        for file in commit['removed']:
+            deleted.append(file)
+            if file in updated:
+                updated.remove(file)
+
+    return (updated, deleted)
+
+
 def verify_signature(received_signature, payload_body):
     """
     Hashes the request payload using the secret and compares it with the
