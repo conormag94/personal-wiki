@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, request, jsonify, current_app
 
-from project.utils import request_is_authorized, get_changed_files
+from project.utils import request_is_authorized, get_changed_files, get_file_contents
 
 wiki = Blueprint('wiki', __name__)
 
@@ -34,7 +34,8 @@ def webhook_event():
                 'removed': removed
             }
         }
-        print(response_message)
+        for file in updated:
+            print(get_file_contents(file))
         return jsonify(response_message), 200
     else:
         return jsonify('Invalid security token'), 401

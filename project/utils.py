@@ -1,7 +1,24 @@
 import hashlib
 import hmac
 
-from flask import current_app
+from base64 import b64decode
+
+from flask import current_app as app
+import requests
+
+BASE_URL = 'https://api.github.com'
+
+def get_file_contents(filename):
+    username = app.config['GITHUB_USERNAME']
+    token = app.config['GITHUB_API_KEY']
+
+    api_call = f'{BASE_URL}/repos/{username}/notes/contents/{filename}'   
+    r = requests.get(api_call, auth=(username, token))
+    
+    encoded_content = r.json()['content']
+    decoded_content = b64decode(encoded_content)
+
+    return decoded_content
 
 def get_changed_files(payload_json):
     updated = []
@@ -26,7 +43,7 @@ def verify_signature(received_signature, payload_body):
     Hashes the request payload using the secret and compares it with the
     hash signature received by the Github webhook.
     """
-    key = current_app.config['SECRET_KEY'].encode()
+    key = app.config['SECRET_KEY'].encode()
     hasher = hmac.new(key, payload_body, hashlib.sha1)
     
     hashed_signature = 'sha1=' + hasher.hexdigest()
@@ -40,7 +57,7 @@ def request_is_authorized(request):
     2. `VERIFY_WEBHOOKS` is True and the signature header is verified, using
        the `verify_signature()` function. 
     """
-    if current_app.config['VERIFY_WEBHOOKS'] is False:
+    if app.config['VERIFY_WEBHOOKS'] is False:
         return True
 
     received_signature = request.headers.get('X-Hub-Signature')
