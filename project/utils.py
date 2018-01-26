@@ -6,14 +6,39 @@ from base64 import b64decode
 from flask import current_app as app
 import requests
 
-BASE_URL = 'https://api.github.com'
+
+def files_in_repo():
+    """
+    Query the Github API for a list of all the markdown files in the repo.
+    """
+    USERNAME = app.config['GITHUB_USERNAME']
+    TOKEN = app.config['GITHUB_API_KEY']
+
+    BASE_URL = f'https://api.github.com/repos/{USERNAME}/notes'
+
+    markdown_files = []
+
+    url = f'{BASE_URL}/git/trees/HEAD?resursive=1'
+    r = requests.get(url, auth=(USERNAME, TOKEN)).json()
+
+    for file in r['tree']:
+        if file['path'].endswith('.md'):
+            markdown_files.append(file['path'])
+
+    return markdown_files
+
 
 def get_file_contents(filename):
-    username = app.config['GITHUB_USERNAME']
-    token = app.config['GITHUB_API_KEY']
+    """
+    Return the contents of <filename>, as bytes (decoded from base64).
+    """
+    USERNAME = app.config['GITHUB_USERNAME']
+    TOKEN = app.config['GITHUB_API_KEY']
 
-    api_call = f'{BASE_URL}/repos/{username}/notes/contents/{filename}'   
-    r = requests.get(api_call, auth=(username, token))
+    BASE_URL = f'https://api.github.com/repos/{USERNAME}/notes'
+
+    url = f'{BASE_URL}/contents/{filename}'   
+    r = requests.get(url, auth=(USERNAME, TOKEN))
     
     encoded_content = r.json()['content']
     decoded_content = b64decode(encoded_content)
@@ -21,6 +46,11 @@ def get_file_contents(filename):
     return decoded_content
 
 def get_changed_files(payload_json):
+    """
+    Get files which have been updated or deleted since the last push.
+
+    Returns a tuple of lists: (updated, deleted).
+    """
     updated = []
     deleted = []
     
