@@ -20,5 +20,15 @@ class TestDevelopmentConfig(TestCase):
         self.assertFalse(app.config['VERIFY_WEBHOOKS'])
         self.assertFalse(current_app is None)
 
+class TestTestingConfig(TestCase):
+    def create_app(self):
+        app.config.from_object('project.config.TestingConfig')
+        return app
+
+    def test_app_is_testing(self):
+        self.assertTrue(app.config['DEBUG'])
+        self.assertTrue(app.config['TESTING'])
+        self.assertFalse(app.config['PRESERVE_CONTEXT_ON_EXCEPTION'])
+
 if __name__ == '__main__':
     unittest.main()
