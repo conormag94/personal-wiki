@@ -1,11 +1,11 @@
 from flask import Flask
 
-from project.config import Config
-
 def create_app():
 
     app = Flask(__name__)
-    app.config.from_object(Config)
+
+    app_settings = 'project.config.DevelopmentConfig'
+    app.config.from_object(app_settings)
 
     from project.routes import wiki
     app.register_blueprint(wiki)
