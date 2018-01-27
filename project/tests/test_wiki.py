@@ -8,6 +8,7 @@ class TestWikiBlueprint(BaseTestCase):
     
     def test_index(self):
         response = self.client.get('/')
+        self.assert200(response)
         self.assert_template_used('index.html')
 
 if __name__ == '__main__':
