@@ -2,11 +2,23 @@ import unittest
 
 from flask_script import Manager
 
-from project import create_app
+from project import create_app, db
+from project.models import Note
 from project.utils import files_in_repo, get_file_contents
 
 app = create_app()
 manager = Manager(app)
+
+@manager.command
+def recreate_db():
+    db.drop_all()
+    db.create_all()
+    db.session.commit()
+
+@manager.command
+def seed_db():
+    db.session.add(Note(title='Testing db', content='Test'))
+    db.session.commit()
 
 @manager.command
 def init():

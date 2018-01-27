@@ -9,6 +9,7 @@ class BaseConfig:
     DEBUG = False
     TESTING = False
     VERIFY_WEBHOOKS = False
+    SQLALCHEMY_TRACK_MODIFICATIONS = False
     
     # Config variables
     SECRET_KEY = os.environ.get('SECRET_KEY')
@@ -17,10 +18,12 @@ class BaseConfig:
 
 class DevelopmentConfig(BaseConfig):
     DEBUG = True
+    SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(basedir, 'db', 'wiki.db')
 
 class TestingConfig(BaseConfig):
     DEBUG = True
     TESTING = True
+    SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(basedir, 'db', 'wiki-test.db')
 
 class ProductionConfig(BaseConfig):
     DEBUG = False
