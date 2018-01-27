@@ -18,6 +18,7 @@ def recreate_db():
 @manager.command
 def seed_db():
     db.session.add(Note(title='Testing db', content='Test'))
+    db.session.add(Note(title='Testing db2', content='Test2', category='Misc'))
     db.session.commit()
 
 @manager.command
