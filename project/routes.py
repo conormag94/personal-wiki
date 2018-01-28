@@ -8,8 +8,12 @@ wiki = Blueprint('wiki', __name__)
 @wiki.route('/', methods=['GET'])
 def index():
     notes = Note.query.all()
-    print(notes[0].content)
     return render_template('index.html', title='Home', notes=notes)
+
+@wiki.route('/<note_id>', methods=['GET'])
+def read_note(note_id):
+    note = Note.query.filter_by(id=note_id).first_or_404()
+    return render_template('note.html', note=note)
 
 @wiki.route('/webhook', methods=['POST'])
 def webhook_event():
