@@ -8,7 +8,7 @@
       <div class="box">
         <h1>Title: {{ note.title }}</h1>
         <div>Category: {{ note.category }}</div>
-        <a href="{{ url_for('wiki.read_note', note_id=note.id) }}">Link</a>
+        <a href="{{ url_for('wiki.view_note', note_id=note.id) }}">Link</a>
       </div>
     </div>  
   {% endfor %}

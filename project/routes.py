@@ -10,10 +10,11 @@ def index():
     notes = Note.query.all()
     return render_template('index.html', title='Home', notes=notes)
 
-@wiki.route('/<note_id>', methods=['GET'])
-def read_note(note_id):
+@wiki.route('/<int:note_id>', methods=['GET'])
+def view_note(note_id):
     note = Note.query.filter_by(id=note_id).first_or_404()
-    return render_template('note.html', note=note)
+    print(note.template_file)
+    return render_template('view_note.html', note=note)
 
 @wiki.route('/webhook', methods=['POST'])
 def webhook_event():
