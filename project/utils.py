@@ -37,13 +37,14 @@ def get_file_contents(filename):
 
     BASE_URL = f'https://api.github.com/repos/{USERNAME}/notes'
 
-    url = f'{BASE_URL}/contents/{filename}'   
+    url = f'{BASE_URL}/contents/{filename}'
     r = requests.get(url, auth=(USERNAME, TOKEN))
-    
+
     encoded_content = r.json()['content']
     decoded_content = b64decode(encoded_content)
 
     return decoded_content
+
 
 def get_changed_files(payload_json):
     """
@@ -53,19 +54,19 @@ def get_changed_files(payload_json):
     """
     updated = []
     deleted = []
-    
+
     for commit in payload_json['commits']:
         for file in commit['added']:
             updated.append(file)
         for file in commit['modified']:
             updated.append(file)
-        
+
         for file in commit['removed']:
             deleted.append(file)
             if file in updated:
                 updated.remove(file)
 
-    return (updated, deleted)
+    return updated, deleted
 
 
 def verify_signature(received_signature, payload_body):
@@ -75,9 +76,10 @@ def verify_signature(received_signature, payload_body):
     """
     key = app.config['SECRET_KEY'].encode()
     hasher = hmac.new(key, payload_body, hashlib.sha1)
-    
+
     hashed_signature = 'sha1=' + hasher.hexdigest()
     return hmac.compare_digest(hashed_signature, received_signature)
+
 
 def request_is_authorized(request):
     """

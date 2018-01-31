@@ -1,4 +1,3 @@
-import os
 import unittest
 
 from flask import current_app
@@ -7,6 +6,7 @@ from flask_testing import TestCase
 from project import create_app
 
 app = create_app()
+
 
 class TestDevelopmentConfig(TestCase):
 
@@ -20,6 +20,7 @@ class TestDevelopmentConfig(TestCase):
         self.assertFalse(app.config['VERIFY_WEBHOOKS'])
         self.assertFalse(current_app is None)
 
+
 class TestTestingConfig(TestCase):
     def create_app(self):
         app.config.from_object('project.config.TestingConfig')
@@ -29,6 +30,7 @@ class TestTestingConfig(TestCase):
         self.assertTrue(app.config['DEBUG'])
         self.assertTrue(app.config['TESTING'])
         self.assertFalse(app.config['PRESERVE_CONTEXT_ON_EXCEPTION'])
+
 
 if __name__ == '__main__':
     unittest.main()

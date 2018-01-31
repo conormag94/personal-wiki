@@ -5,16 +5,19 @@ from project.utils import request_is_authorized, get_changed_files, get_file_con
 
 wiki = Blueprint('wiki', __name__)
 
+
 @wiki.route('/', methods=['GET'])
 def index():
     notes = Note.query.all()
     return render_template('index.html', title='Home', notes=notes)
+
 
 @wiki.route('/<int:note_id>', methods=['GET'])
 def view_note(note_id):
     note = Note.query.filter_by(id=note_id).first_or_404()
     print(note.template_file)
     return render_template('view_note.html', note=note)
+
 
 @wiki.route('/webhook', methods=['POST'])
 def webhook_event():
