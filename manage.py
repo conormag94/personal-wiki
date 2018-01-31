@@ -19,9 +19,15 @@ def recreate_db():
 
 @manager.command
 def seed_db():
-    db.session.add(Note(title='Testing db', category='Git'))
-    db.session.add(Note(title='Testing db2', category='Misc'))
+    db.session.add(Note(title='Testing db', markdown=b'# Some Markdown\n## Some more', category='Git'))
+    db.session.add(Note(title='Testing db2', markdown=b'# Some more Markdown', category='Misc'))
     db.session.commit()
+
+
+@manager.command
+def reset_db():
+    recreate_db()
+    seed_db()
 
 
 @manager.command
@@ -29,7 +35,13 @@ def init():
     filenames = files_in_repo()
     print(filenames)
     for file in filenames:
-        print(get_file_contents(file))
+        markdown = get_file_contents(file)
+        print(markdown)
+        db.session.add(Note(
+            title=file,
+            markdown=markdown
+        ))
+        db.session.commit()
 
 
 @manager.command

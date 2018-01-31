@@ -3,8 +3,14 @@ import hmac
 
 from base64 import b64decode
 
-from flask import current_app as app
+import markdown2
 import requests
+from flask import current_app as app
+
+
+def markdown_to_html(markdown_string):
+    html = markdown2.markdown(markdown_string, extras=['fenced-code-blocks'])
+    return html
 
 
 def files_in_repo():
@@ -18,7 +24,7 @@ def files_in_repo():
 
     markdown_files = []
 
-    url = f'{BASE_URL}/git/trees/HEAD?resursive=1'
+    url = f'{BASE_URL}/git/trees/HEAD?recursive=1'
     r = requests.get(url, auth=(USERNAME, TOKEN)).json()
 
     for file in r['tree']:
