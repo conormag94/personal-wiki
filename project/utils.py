@@ -83,23 +83,26 @@ def get_changed_files(payload_json):
     """
     Get files which have been updated or deleted since the last push.
 
-    Returns a tuple of lists: (updated, deleted).
+    Returns a tuple of lists: (added, updated, deleted).
     """
+    added = []
     updated = []
     deleted = []
 
     for commit in payload_json['commits']:
         for file in commit['added']:
-            updated.append(file)
+            added.append(file)
         for file in commit['modified']:
             updated.append(file)
 
         for file in commit['removed']:
             deleted.append(file)
+            if file in added:
+                added.remove(file)
             if file in updated:
                 updated.remove(file)
 
-    return updated, deleted
+    return added, updated, deleted
 
 
 def verify_signature(received_signature, payload_body):
