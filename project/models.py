@@ -36,7 +36,8 @@ class Note(db.Model):
         if '/' in new_title:
             new_title = new_title.split('/')[-1]
 
-        new_title = new_title.strip('.md')
+        if new_title.endswith('.md'):
+            new_title = new_title[:-3]
         new_title = new_title.replace('-', ' ').replace('_', ' ')
         new_title = new_title.title()
 
