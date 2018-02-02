@@ -20,11 +20,16 @@ def recreate_db():
 
 @manager.command
 def seed_db():
-    db.session.add(Note(title='Testing db', markdown=b'# Some Markdown\n## Some more'))
-    db.session.add(Note(title='Git/Testing db2', markdown=b'# Some more Markdown'))
-    db.session.add(Note(title='Git/another-git_note.md', markdown=b'# Some more Markdown about Git'))
+    db.session.add(Note(filename='Testing db', markdown=b'# Some Markdown\n## Some more'))
+    db.session.add(Note(filename='Git/Testing db2', markdown=b'# Some more Markdown'))
+    db.session.add(Note(filename='Git/another-git_note.md', markdown=b'# Some more Markdown about Git'))
     db.session.commit()
 
+@manager.command
+def update():
+    note = Note.query.filter_by(id=2).first()
+    note.update('Something entirely different')
+    db.session.commit()
 
 @manager.command
 def reset_db():
@@ -40,7 +45,7 @@ def init():
         markdown = get_file_contents(file)
         print(markdown)
         db.session.add(Note(
-            title=file,
+            filename=file,
             markdown=markdown
         ))
         db.session.commit()

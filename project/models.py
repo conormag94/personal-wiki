@@ -8,14 +8,25 @@ from project.utils import markdown_to_html
 class Note(db.Model):
     __tablename__ = 'notes'
     id = db.Column(db.Integer, primary_key=True)
+    filename = db.Column(db.String())
     title = db.Column(db.String())
     category = db.Column(db.String())
     markdown = db.Column(db.String())
 
-    def __init__(self, title, markdown):
-        self.title = self.extract_title(title)
+    def __init__(self, filename, markdown):
+        self.filename = filename
+        self.title = self.extract_title(filename)
         self.markdown = markdown
-        self.category = self.category_from_title(title) or 'General'
+        self.category = self.category_from_filename(filename) or 'General'
+
+    def update(self, new_content):
+        new_html = markdown_to_html(new_content)
+
+        with open(f'{basedir}/templates/{self.template_file}', 'w') as out:
+            out.write(new_html)
+
+        self.markdown = new_content
+
 
     @reconstructor
     def init_template_file(self):
@@ -44,8 +55,8 @@ class Note(db.Model):
         return new_title
 
     @staticmethod
-    def category_from_title(title):
-        if '/' in title:
-            return title.split('/')[0]
+    def category_from_filename(filename):
+        if '/' in filename:
+            return filename.split('/')[0]
 
         return None
