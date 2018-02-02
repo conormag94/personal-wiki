@@ -1,11 +1,38 @@
+import glob
 import hashlib
 import hmac
+import os
 
 from base64 import b64decode
 
 import markdown2
 import requests
 from flask import current_app as app
+
+basedir = os.path.abspath(os.path.dirname(__file__))
+
+
+def remove_note_template(note_id):
+    """Remove a note's html template file after it has been deleted."""
+    filename = f'{basedir}/templates/notes/{note_id}.html'
+    try:
+        os.remove(filename)
+        print(f'File {filename} deleted')
+    except OSError:
+        print(f'File {filename} does not exist')
+
+
+def remove_all_note_templates():
+    """
+    Remove all html note templates from the directory, except for the
+    placeholder template, 0.html
+    """
+    directory = f'{basedir}/templates/notes/*.html'
+    files = glob.glob(directory)
+
+    for file in files:
+        if '/0.html' not in file:
+            os.remove(file)
 
 
 def markdown_to_html(markdown_string):
