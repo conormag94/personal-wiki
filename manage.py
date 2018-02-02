@@ -4,7 +4,7 @@ from flask_script import Manager
 
 from project import create_app, db
 from project.models import Note
-from project.utils import files_in_repo, get_file_contents
+from project.utils import files_in_repo, get_file_contents, remove_all_note_templates
 
 app = create_app()
 manager = Manager(app)
@@ -15,12 +15,14 @@ def recreate_db():
     db.drop_all()
     db.create_all()
     db.session.commit()
+    remove_all_note_templates()
 
 
 @manager.command
 def seed_db():
-    db.session.add(Note(title='Testing db', markdown=b'# Some Markdown\n## Some more', category='Git'))
-    db.session.add(Note(title='Testing db2', markdown=b'# Some more Markdown', category='Misc'))
+    db.session.add(Note(title='Testing db', markdown=b'# Some Markdown\n## Some more'))
+    db.session.add(Note(title='Git/Testing db2', markdown=b'# Some more Markdown'))
+    db.session.add(Note(title='Git/another-git_note.md', markdown=b'# Some more Markdown about Git'))
     db.session.commit()
 
 
