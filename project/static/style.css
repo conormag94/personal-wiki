@@ -1,3 +1,7 @@
 .main-content {
     background-color: #F7f7f7;
 }
+
+.content pre {
+    padding: 0px;
+}
